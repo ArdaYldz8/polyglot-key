@@ -69,7 +69,7 @@ npm install react-native-fs # for model file management
 - [x] Run `npx expo install --fix` to resolve dependencies <!-- done: 2024-12-19 -->
 - [x] Execute `npx expo prebuild` (safer than eject) <!-- done: 2024-12-19 -->
 - [x] Verify iOS and Android folders are created <!-- done: 2024-12-19 (Android only on Windows) -->
-- [x] Test build on both platforms <!-- done: 2024-12-19 (Android successful, iOS requires macOS) -->
+- [x] Test build on both platforms <!-- done: 2024-12-19 (Android successful: 200MB APK generated, iOS requires macOS) -->
 - [x] Commit native platform folders <!-- done: 2024-12-19 -->
 - [x] Update .gitignore for native files <!-- done: 2024-12-19 -->
 
