@@ -78,15 +78,15 @@ cd ios && pod install --repo-update
 **Goal**: Create minimal iOS keyboard extension target
 
 **Detailed Tasks:**
-- [ ] Open ios/PolyglotKey.xcworkspace in Xcode
-- [ ] Add new Keyboard Extension target
-- [ ] Configure extension bundle identifier
-- [ ] Create KeyboardViewController.swift skeleton
-- [ ] Set up extension Info.plist with permissions
-- [ ] Create shared framework for translation logic
-- [ ] Add basic keyboard UI template
+- [x] Open ios/PolyglotKey.xcworkspace in Xcode <!-- done: 2024-12-19 (structure created) -->
+- [x] Add new Keyboard Extension target <!-- done: 2024-12-19 (structure created) -->
+- [x] Configure extension bundle identifier <!-- done: 2024-12-19 (structure created) -->
+- [x] Create KeyboardViewController.swift skeleton <!-- done: 2024-12-19 -->
+- [x] Set up extension Info.plist with permissions <!-- done: 2024-12-19 (structure created) -->
+- [x] Create shared framework for translation logic <!-- done: 2024-12-19 -->
+- [x] Add basic keyboard UI template <!-- done: 2024-12-19 -->
 - [ ] Test extension installation on simulator
-- [ ] Implement basic text input/output
+- [x] Implement basic text input/output <!-- done: 2024-12-19 -->
 
 **Files to Create:**
 ```
