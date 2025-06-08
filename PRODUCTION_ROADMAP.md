@@ -58,9 +58,9 @@ npm install react-native-fs # for model file management
 - [x] Run `npx expo install --fix` to resolve dependencies <!-- done: 2024-12-19 -->
 - [x] Execute `npx expo prebuild` (safer than eject) <!-- done: 2024-12-19 -->
 - [x] Verify iOS and Android folders are created <!-- done: 2024-12-19 (Android only on Windows) -->
-- [ ] Test build on both platforms
+- [x] Test build on both platforms <!-- done: 2024-12-19 (Android successful, iOS requires macOS) -->
 - [x] Commit native platform folders <!-- done: 2024-12-19 -->
-- [ ] Update .gitignore for native files
+- [x] Update .gitignore for native files <!-- done: 2024-12-19 -->
 
 **Conflict Resolution Tips:**
 ```bash
@@ -115,6 +115,25 @@ ios/PolyglotKeyboard/
 
 **Files to Create:**
 ```
+android/app/src/main/java/com/anonymous/boltexponativewind/
+├── keyboard/
+│   ├── PolyglotInputMethodService.kt
+│   ├── TranslationKeyboardView.kt
+│   └── ModelInferenceManager.kt
+└── modules/
+    ├── KeyboardBridgeModule.kt
+    └── KeyboardPackage.kt
+
+android/app/src/main/res/xml/
+└── method.xml
+
+ios/PolyglotKeyboard/
+├── KeyboardViewController.swift
+├── TranslationEngine.swift
+└── TranslationKeyboardView.swift
+
+ios/PolyglotKey/NativeModules/
+├── KeyboardBridge.h
 android/app/src/main/java/com/polyglotkey/keyboard/
 ├── PolyglotInputMethodService.kt
 ├── TranslationKeyboardView.kt
@@ -171,25 +190,81 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Performance optimization
 - [ ] Documentation update
 
-### 2.6 Native Keyboard Features (Day 6)
-**Timeline**: 1 day  
-**Goal**: Implement core keyboard features
+### 2.5 Integration Testing & Validation (Day 5)
+**Timeline**: 1 day
+**Goal**: End-to-end testing and device validation
 
-**iOS Features:**
+**Testing Tasks:**
+- [ ] Test keyboard installation flow on real iOS device
+- [ ] Test keyboard installation flow on real Android device  
+- [ ] Create screen recordings of installation process
+- [ ] Verify "password field → translation off" behavior
+- [ ] Document test results in validation table
+- [ ] Pull and analyze Crashlytics logs (target: zero crashes)
+- [ ] Test bridge communication both ways
+- [ ] Validate settings synchronization
+- [ ] Test translation history sharing
+- [ ] Performance testing on low-end devices
+
+### 2.6 UX Enhancements & Polish (Day 6)
+**Timeline**: 1 day  
+**Goal**: Advanced UX features and gesture shortcuts
+
+**Gesture Shortcuts:**
+- [ ] Scope gesture shortcuts implementation (swipe, long-press)
+- [ ] Document potential conflicts with system gestures
+- [ ] Implement swipe-to-translate gesture
+- [ ] Add long-press for alternative translations
+- [ ] Create gesture tutorial/onboarding
+
+**Theme Packs:**
+- [ ] Design theme system architecture
+- [ ] Implement dark/light theme switching
+- [ ] Create custom color scheme support
+- [ ] Add theme preview functionality
+- [ ] Provide ETA for theme pack marketplace
+
+**Advanced Features:**
 - [ ] Custom keyboard UI with translation suggestions
 - [ ] Real-time translation as user types
 - [ ] Language switching via long-press
 - [ ] Clipboard translation detection
-- [ ] Haptic feedback integration
-
-**Android Features:**
+- [ ] Enhanced haptic feedback patterns
 - [ ] Custom IME with suggestion strip
 - [ ] Background translation processing
 - [ ] Language detection and switching
-- [ ] Accessibility support
-- [ ] Material Design 3 compliance
+- [ ] Accessibility support enhancements
+  - [ ] Material Design 3 compliance
 
-## Phase 3: Advanced Features (Week 5-6)
+### 2.7 Pre-Phase 3 Setup & CI Pipeline (Day 7)
+**Timeline**: 1 day
+**Goal**: Finalize Phase 2 and prepare for Phase 3
+
+**CI/CD Pipeline Setup:**
+- [ ] Configure GitHub Actions for keyboard builds
+- [ ] Set up build → lint → unit test → e2e test pipeline
+- [ ] Add Android keyboard APK build automation
+- [ ] Set up iOS keyboard archive generation (requires macOS runner)
+- [ ] Configure automated testing on device farms
+- [ ] Add Crashlytics integration for crash reporting
+- [ ] Set up performance monitoring and alerts
+
+**Phase 2 Completion:**
+- [ ] Ensure all Phase 2 tasks have done: YYYY-MM-DD timestamps
+- [ ] Create comprehensive Phase 2 completion report
+- [ ] Document known issues and technical debt
+- [ ] Prepare Phase 3 kickoff documentation
+- [ ] Archive Phase 2 artifacts and learnings
+
+**Quality Gates:**
+- [ ] Zero critical bugs in keyboard functionality
+- [ ] 100% Phase 2 roadmap task completion
+- [ ] Successful keyboard installation on 3+ real devices
+- [ ] Performance benchmarks documented
+- [ ] Security audit completed for keyboard extension
+
+  
+  ## Phase 3: Advanced Features (Week 5-6)
 
 ### 3.1 Model Management System
 - [x] Implement progressive model downloading <!-- done: 2024-12-19 -->

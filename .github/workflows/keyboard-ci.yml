@@ -1,0 +1,372 @@
+name: Polyglot Key - Keyboard CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  NODE_VERSION: '18'
+  JAVA_VERSION: '17'
+  
+jobs:
+  # Stage 1: Build
+  build:
+    name: 🔨 Build Keyboard Components
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📱 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ env.JAVA_VERSION }}
+        
+    - name: 🛠️ Install dependencies
+      run: |
+        npm ci
+        npx expo install --fix
+        
+    - name: 🏗️ Build TypeScript
+      run: npx tsc --noEmit
+      
+    - name: 🤖 Build Android APK
+      run: |
+        cd android
+        ./gradlew assembleDebug
+        
+    - name: 📦 Upload Android APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: keyboard-android-apk
+        path: android/app/build/outputs/apk/debug/
+        retention-days: 7
+
+  # Stage 2: Lint
+  lint:
+    name: 🔍 Code Quality & Linting
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 15
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📱 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 🛠️ Install dependencies
+      run: npm ci
+      
+    - name: 🎨 ESLint Check
+      run: npx eslint . --ext .ts,.tsx,.js,.jsx
+      
+    - name: 💅 Prettier Check
+      run: npx prettier --check "**/*.{ts,tsx,js,jsx,json,md}"
+      
+    - name: 🔒 TypeScript Strict Check
+      run: npx tsc --noEmit --strict
+      
+    - name: 🤖 Android Lint
+      run: |
+        cd android
+        ./gradlew lint
+        
+    - name: 📊 Upload Lint Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: lint-reports
+        path: |
+          android/app/build/reports/lint-results*.html
+        retention-days: 7
+
+  # Stage 3: Unit Tests
+  unit-tests:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    needs: lint
+    timeout-minutes: 20
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📱 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ env.JAVA_VERSION }}
+        
+    - name: 🛠️ Install dependencies
+      run: npm ci
+      
+    - name: 🧪 Run Jest Unit Tests
+      run: npm test -- --coverage --watchAll=false
+      
+    - name: 🤖 Run Android Unit Tests
+      run: |
+        cd android
+        ./gradlew testDebugUnitTest
+        
+    - name: 📊 Upload Coverage Reports
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage/lcov.info
+        flags: unittests
+        name: keyboard-coverage
+        
+    - name: 📋 Upload Test Reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: unit-test-reports
+        path: |
+          coverage/
+          android/app/build/reports/tests/
+        retention-days: 7
+
+  # Stage 4: E2E Tests
+  e2e-tests:
+    name: 🎭 End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    timeout-minutes: 45
+    
+    strategy:
+      matrix:
+        api-level: [29, 33]
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📱 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: ☕ Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: ${{ env.JAVA_VERSION }}
+        
+    - name: 🛠️ Install dependencies
+      run: npm ci
+      
+    - name: 🤖 Enable KVM group perms
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+        
+    - name: 📱 Android Emulator E2E Tests
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: ${{ matrix.api-level }}
+        target: google_apis
+        arch: x86_64
+        profile: Nexus 6
+        script: |
+          npx detox build --configuration android.emu.debug
+          npx detox test --configuration android.emu.debug --headless
+          
+    - name: 📊 Upload E2E Test Reports
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: e2e-test-reports-api${{ matrix.api-level }}
+        path: |
+          artifacts/
+          android/app/build/reports/androidTests/
+        retention-days: 7
+
+  # Stage 5: Security & Performance
+  security-performance:
+    name: 🛡️ Security & Performance Audit
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    timeout-minutes: 25
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📱 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 🛠️ Install dependencies
+      run: npm ci
+      
+    - name: 🔍 NPM Security Audit
+      run: npm audit --audit-level high
+      
+    - name: 🛡️ Dependency Security Check
+      run: |
+        npx audit-ci --config audit-ci.json
+        
+    - name: 📊 Bundle Size Analysis
+      run: |
+        npx expo export --platform android
+        du -sh dist/
+        
+    - name: 🚀 Performance Budget Check
+      run: |
+        # Check APK size (target: <50MB)
+        APK_SIZE=$(du -m android/app/build/outputs/apk/debug/*.apk | cut -f1)
+        echo "APK Size: ${APK_SIZE}MB"
+        if [ $APK_SIZE -gt 50 ]; then
+          echo "❌ APK size exceeds 50MB limit"
+          exit 1
+        fi
+        echo "✅ APK size within limits"
+
+  # Stage 6: iOS Build (macOS only)
+  ios-build:
+    name: 🍎 iOS Keyboard Build
+    runs-on: macos-latest
+    needs: lint
+    timeout-minutes: 40
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📱 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 🛠️ Install dependencies
+      run: npm ci
+      
+    - name: 🍎 Setup iOS
+      run: |
+        cd ios
+        pod install
+        
+    - name: 🏗️ Build iOS Keyboard Extension
+      run: |
+        cd ios
+        xcodebuild -workspace PolyglotKey.xcworkspace \
+                   -scheme PolyglotKey \
+                   -configuration Debug \
+                   -destination 'platform=iOS Simulator,name=iPhone 15' \
+                   build
+                   
+    - name: 📦 Archive iOS Build
+      uses: actions/upload-artifact@v4
+      with:
+        name: keyboard-ios-build
+        path: ios/build/
+        retention-days: 7
+
+  # Stage 7: Deployment
+  deploy:
+    name: 🚀 Deploy Artifacts
+    runs-on: ubuntu-latest
+    needs: [e2e-tests, security-performance]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    timeout-minutes: 15
+    
+    steps:
+    - name: 📥 Download Android APK
+      uses: actions/download-artifact@v4
+      with:
+        name: keyboard-android-apk
+        path: ./artifacts/android/
+        
+    - name: 📥 Download iOS Build (if available)
+      uses: actions/download-artifact@v4
+      continue-on-error: true
+      with:
+        name: keyboard-ios-build
+        path: ./artifacts/ios/
+        
+    - name: 🏷️ Create Release Tag
+      run: |
+        echo "RELEASE_TAG=keyboard-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+        
+    - name: 📦 Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.RELEASE_TAG }}
+        name: Polyglot Keyboard Build ${{ env.RELEASE_TAG }}
+        draft: true
+        files: |
+          artifacts/android/*.apk
+          artifacts/ios/*
+        body: |
+          ## 🎯 Polyglot Keyboard Build
+          
+          **Build Date:** $(date +'%Y-%m-%d %H:%M:%S UTC')
+          **Commit:** ${{ github.sha }}
+          **Branch:** ${{ github.ref_name }}
+          
+          ### ✅ CI Pipeline Results
+          - 🔨 Build: Successful
+          - 🔍 Lint: Passed
+          - 🧪 Unit Tests: Passed  
+          - 🎭 E2E Tests: Passed
+          - 🛡️ Security: Audited
+          
+          ### 📱 Artifacts
+          - Android APK (Debug build)
+          - iOS Build Archive (if available)
+          
+          ### 🧪 Testing Instructions
+          1. Download APK for Android testing
+          2. Install via ADB: `adb install keyboard.apk`
+          3. Enable keyboard in Settings → Languages & Input
+          4. Test translation functionality
+          
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Notification
+  notify:
+    name: 📢 Build Notification
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    if: always()
+    
+    steps:
+    - name: 🎉 Success Notification
+      if: needs.deploy.result == 'success'
+      run: |
+        echo "✅ Pipeline completed successfully!"
+        echo "🚀 Keyboard build is ready for testing"
+        
+    - name: ❌ Failure Notification  
+      if: failure()
+      run: |
+        echo "❌ Pipeline failed"
+        echo "🔍 Check logs for details" 
