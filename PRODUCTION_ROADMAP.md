@@ -53,13 +53,13 @@ npm install react-native-fs # for model file management
 **Prerequisites**: Backup project, clean git state
 
 **Step-by-step Migration:**
-- [ ] Create git backup branch
-- [ ] Clean package cache and node_modules
-- [ ] Run `npx expo install --fix` to resolve dependencies
-- [ ] Execute `npx expo prebuild` (safer than eject)
-- [ ] Verify iOS and Android folders are created
+- [x] Create git backup branch <!-- done: 2024-12-19 -->
+- [x] Clean package cache and node_modules <!-- done: 2024-12-19 -->
+- [x] Run `npx expo install --fix` to resolve dependencies <!-- done: 2024-12-19 -->
+- [x] Execute `npx expo prebuild` (safer than eject) <!-- done: 2024-12-19 -->
+- [x] Verify iOS and Android folders are created <!-- done: 2024-12-19 (Android only on Windows) -->
 - [ ] Test build on both platforms
-- [ ] Commit native platform folders
+- [x] Commit native platform folders <!-- done: 2024-12-19 -->
 - [ ] Update .gitignore for native files
 
 **Conflict Resolution Tips:**
