@@ -37,7 +37,7 @@ npm install react-native-fs # for model file management
 - [x] Integrate language detection libraries (franc, langdetect)
 - [x] Implement confidence scoring for auto-detection
 - [x] Add manual language override capabilities (service layer)
-- [ ] Create language detection training data pipeline (N/A for current libraries - consider for custom models)
+- [x] Create language detection training data pipeline (N/A for current libraries - consider for custom models) <!-- skipped: 2024-12-19 -->
 
 ### 1.3 Improved Translation Quality
 - [x] Implement translation confidence scoring <!-- done: 2024-12-19 -->
@@ -47,54 +47,152 @@ npm install react-native-fs # for model file management
 
 ## Phase 2: Native Keyboard Implementation (Week 3-4)
 
-### 2.1 Expo Bare Workflow Migration
-**Critical Step**: Eject from Expo managed workflow
+### 2.1 Expo Bare Workflow Migration (Day 1)
+**Critical Step**: Eject from Expo managed workflow safely
+**Timeline**: 1 day
+**Prerequisites**: Backup project, clean git state
+
+**Step-by-step Migration:**
+- [ ] Create git backup branch
+- [ ] Clean package cache and node_modules
+- [ ] Run `npx expo install --fix` to resolve dependencies
+- [ ] Execute `npx expo prebuild` (safer than eject)
+- [ ] Verify iOS and Android folders are created
+- [ ] Test build on both platforms
+- [ ] Commit native platform folders
+- [ ] Update .gitignore for native files
+
+**Conflict Resolution Tips:**
 ```bash
-npx expo eject
-# or
-npx expo run:ios
-npx expo run:android
+# If prebuild fails, try:
+npx expo install --fix
+npx expo prebuild --clean
+# If Metro bundler conflicts:
+npx expo reset-project
+# If iOS build fails:
+cd ios && pod install --repo-update
 ```
 
-### 2.2 iOS Keyboard Extension
-**Files to Create:**
-- `ios/PolyglotKeyboard/` - iOS Keyboard Extension target
-- `ios/PolyglotKeyboard/KeyboardViewController.swift`
-- `ios/PolyglotKeyboard/Info.plist`
-- `ios/PolyglotKeyboard/TranslationEngine.swift`
+### 2.2 iOS Keyboard Extension Setup (Day 2)
+**Timeline**: 1 day
+**Goal**: Create minimal iOS keyboard extension target
 
-**Key Features:**
+**Detailed Tasks:**
+- [ ] Open ios/PolyglotKey.xcworkspace in Xcode
+- [ ] Add new Keyboard Extension target
+- [ ] Configure extension bundle identifier
+- [ ] Create KeyboardViewController.swift skeleton
+- [ ] Set up extension Info.plist with permissions
+- [ ] Create shared framework for translation logic
+- [ ] Add basic keyboard UI template
+- [ ] Test extension installation on simulator
+- [ ] Implement basic text input/output
+
+**Files to Create:**
+```
+ios/PolyglotKeyboard/
+├── KeyboardViewController.swift
+├── Info.plist
+├── TranslationEngine.swift
+├── KeyboardView.swift
+└── Extensions.swift
+```
+
+### 2.3 Android Input Method Service (Day 3)
+**Timeline**: 1 day  
+**Goal**: Create minimal Android IME service
+
+**Detailed Tasks:**
+- [ ] Create Android IME service structure
+- [ ] Implement PolyglotInputMethodService.kt
+- [ ] Create keyboard layout XML files
+- [ ] Set up InputMethodService lifecycle
+- [ ] Add basic suggestion strip UI
+- [ ] Configure AndroidManifest.xml permissions
+- [ ] Create method.xml for IME metadata
+- [ ] Test IME activation in Android settings
+- [ ] Implement basic text input handling
+
+**Files to Create:**
+```
+android/app/src/main/java/com/polyglotkey/keyboard/
+├── PolyglotInputMethodService.kt
+├── TranslationKeyboardView.kt
+├── ModelInferenceManager.kt
+└── KeyboardLayoutManager.kt
+
+android/app/src/main/res/
+├── xml/method.xml
+├── layout/keyboard_view.xml
+└── layout/suggestion_strip.xml
+```
+
+### 2.4 React Native Bridge Implementation (Day 4)
+**Timeline**: 1 day
+**Goal**: Connect native keyboards to RN app logic
+
+**Detailed Tasks:**
+- [ ] Create iOS native module for keyboard communication
+- [ ] Create Android native module for keyboard communication  
+- [ ] Implement settings synchronization bridge
+- [ ] Add translation history sharing bridge
+- [ ] Create debugging and analytics bridge
+- [ ] Add keyboard status monitoring
+- [ ] Implement keyboard enable/disable controls
+- [ ] Create keyboard theme synchronization
+- [ ] Test bridge communication both ways
+
+**Bridge Files:**
+```
+ios/PolyglotKey/NativeModules/
+├── KeyboardBridge.h
+├── KeyboardBridge.m
+└── SettingsSync.swift
+
+android/app/src/main/java/com/polyglotkey/modules/
+├── KeyboardBridgeModule.kt
+├── SettingSyncModule.kt
+└── KeyboardPackage.kt
+```
+
+### 2.5 Integration Testing & Polish (Day 5)
+**Timeline**: 1 day
+**Goal**: End-to-end testing and refinement
+
+**Detailed Tasks:**
+- [ ] Test keyboard installation flow
+- [ ] Verify translation functionality works
+- [ ] Test settings synchronization
+- [ ] Validate translation history sharing
+- [ ] Check keyboard switching behavior
+- [ ] Test app background/foreground states
+- [ ] Verify memory management
+- [ ] Test crash recovery
+- [ ] Performance optimization
+- [ ] Documentation update
+
+### 2.6 Native Keyboard Features (Day 6)
+**Timeline**: 1 day  
+**Goal**: Implement core keyboard features
+
+**iOS Features:**
 - [ ] Custom keyboard UI with translation suggestions
 - [ ] Real-time translation as user types
 - [ ] Language switching via long-press
 - [ ] Clipboard translation detection
 - [ ] Haptic feedback integration
 
-### 2.3 Android Input Method Service
-**Files to Create:**
-- `android/app/src/main/java/com/polyglotkey/keyboard/`
-- `PolyglotInputMethodService.kt`
-- `TranslationKeyboardView.kt`
-- `ModelInferenceManager.kt`
-
-**Key Features:**
+**Android Features:**
 - [ ] Custom IME with suggestion strip
 - [ ] Background translation processing
 - [ ] Language detection and switching
 - [ ] Accessibility support
 - [ ] Material Design 3 compliance
 
-### 2.4 React Native Bridge
-**Purpose**: Connect native keyboard to React Native logic
-- [ ] Create native modules for keyboard communication
-- [ ] Implement settings synchronization
-- [ ] Add translation history sharing
-- [ ] Create debugging and analytics bridge
-
 ## Phase 3: Advanced Features (Week 5-6)
 
 ### 3.1 Model Management System
-- [ ] Implement progressive model downloading
+- [x] Implement progressive model downloading <!-- done: 2024-12-19 -->
 - [ ] Add model compression and optimization
 - [ ] Create model update mechanism
 - [ ] Implement storage quota management
