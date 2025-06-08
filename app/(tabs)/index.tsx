@@ -13,6 +13,7 @@ import { ArrowUpDown, Clipboard, Sparkles } from 'lucide-react-native';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { TranslationCard } from '@/components/TranslationCard';
 import { translationService } from '@/services/translationService';
+import { languageDetectionService } from '@/services/languageDetectionService';
 import { Language, TranslationResult } from '@/types/translation';
 import { LANGUAGES } from '@/constants/languages';
 import * as ClipboardModule from 'expo-clipboard';
@@ -50,7 +51,7 @@ export default function TranslateScreen() {
 
       const result: TranslationResult = {
         originalText: inputText,
-        translatedText,
+        translatedText: translatedText.translatedText,
         sourceLanguage,
         targetLanguage,
         confidence,
@@ -73,10 +74,12 @@ export default function TranslateScreen() {
         setInputText(clipboardText);
         
         // Auto-detect language if different from current source
-        const detectedLanguage = await translationService.detectLanguage(clipboardText);
-        if (detectedLanguage.code !== sourceLanguage.code) {
-          setSourceLanguage(detectedLanguage);
-        }
+        // TODO: Fix language detection integration
+        // const detectedLanguage = await languageDetectionService.detectLanguage(clipboardText);
+        // if (detectedLanguage.language !== sourceLanguage.code) {
+        //   const matchedLanguage = LANGUAGES.find(lang => lang.code === detectedLanguage.language);
+        //   if (matchedLanguage) setSourceLanguage(matchedLanguage);
+        // }
       }
     } catch (error) {
       Alert.alert('Clipboard Error', 'Failed to read clipboard content.');
