@@ -103,15 +103,15 @@ ios/PolyglotKeyboard/
 **Goal**: Create minimal Android IME service
 
 **Detailed Tasks:**
-- [ ] Create Android IME service structure
-- [ ] Implement PolyglotInputMethodService.kt
-- [ ] Create keyboard layout XML files
-- [ ] Set up InputMethodService lifecycle
-- [ ] Add basic suggestion strip UI
-- [ ] Configure AndroidManifest.xml permissions
-- [ ] Create method.xml for IME metadata
+- [x] Create Android IME service structure <!-- done: 2024-12-19 -->
+- [x] Implement PolyglotInputMethodService.kt <!-- done: 2024-12-19 -->
+- [x] Create keyboard layout XML files <!-- done: 2024-12-19 -->
+- [x] Set up InputMethodService lifecycle <!-- done: 2024-12-19 -->
+- [x] Add basic suggestion strip UI <!-- done: 2024-12-19 -->
+- [x] Configure AndroidManifest.xml permissions <!-- done: 2024-12-19 -->
+- [x] Create method.xml for IME metadata <!-- done: 2024-12-19 -->
 - [ ] Test IME activation in Android settings
-- [ ] Implement basic text input handling
+- [x] Implement basic text input handling <!-- done: 2024-12-19 -->
 
 **Files to Create:**
 ```
