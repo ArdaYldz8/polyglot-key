@@ -20,31 +20,43 @@ export function TranslationCard({ result, onCopy }: TranslationCardProps) {
       <View style={styles.header}>
         <View style={styles.languageIndicator}>
           <Text style={styles.languageFlag}>{result.sourceLanguage.flag}</Text>
-          <Text style={styles.languageCode}>{result.sourceLanguage.code.toUpperCase()}</Text>
+          <Text style={styles.languageCode}>
+            {result.sourceLanguage.code.toUpperCase()}
+          </Text>
         </View>
         <Text style={styles.arrow}>→</Text>
         <View style={styles.languageIndicator}>
           <Text style={styles.languageFlag}>{result.targetLanguage.flag}</Text>
-          <Text style={styles.languageCode}>{result.targetLanguage.code.toUpperCase()}</Text>
+          <Text style={styles.languageCode}>
+            {result.targetLanguage.code.toUpperCase()}
+          </Text>
         </View>
         <View style={styles.processingInfo}>
           <Text style={styles.processingTime}>{result.processingTime}ms</Text>
-          <View style={[styles.confidenceDot, { backgroundColor: result.confidence > 0.8 ? '#10b981' : '#f59e0b' }]} />
+          <View
+            style={[
+              styles.confidenceDot,
+              {
+                backgroundColor:
+                  result.confidence > 0.8 ? '#10b981' : '#f59e0b',
+              },
+            ]}
+          />
         </View>
       </View>
-      
+
       <View style={styles.textContainer}>
         <View style={styles.textSection}>
           <Text style={styles.textLabel}>Original</Text>
           <Text style={styles.originalText}>{result.originalText}</Text>
         </View>
-        
+
         <View style={styles.textSection}>
           <Text style={styles.textLabel}>Translation</Text>
           <Text style={styles.translatedText}>{result.translatedText}</Text>
         </View>
       </View>
-      
+
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} onPress={handleCopy}>
           <Copy size={16} color="#6b7280" />

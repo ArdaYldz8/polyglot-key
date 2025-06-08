@@ -1,6 +1,7 @@
 # Polyglot Key: Production Deployment Roadmap
 
 ## Current State Assessment
+
 ✅ **Completed**: Beautiful React Native/Expo demo with core UI/UX
 ✅ **Completed**: Tab navigation with Translate, Keyboard, Settings, About screens
 ✅ **Completed**: Mock translation service with language detection
@@ -10,7 +11,9 @@
 ## Phase 1: Core Functionality Enhancement (Week 1-2)
 
 ### 1.1 Real Translation Integration
+
 **Priority: HIGH**
+
 - [x] Replace mock translation service with actual ML models
 - [x] Integrate TensorFlow Lite for React Native
 - [x] Implement OPUS-MT model loading and inference
@@ -18,28 +21,34 @@
 - [x] Implement offline-first translation pipeline
 
 **Technical Implementation:**
+
 ```bash
 # Required packages
 npm install @tensorflow/tfjs @tensorflow/tfjs-react-native
 npm install @tensorflow/tfjs-platform-react-native
 npm install react-native-fs # for model file management
 ```
+
 - [x] Required packages installed
 
 **Files to Create/Modify:**
+
 - [x] `services/mlService.ts` - TensorFlow Lite integration
 - [x] `services/modelManager.ts` - Model download and caching
 - [x] `utils/modelConverter.ts` - ONNX to TFLite conversion utilities
 - [x] `constants/modelConfigs.ts` - Model metadata and URLs
 
 ### 1.2 Enhanced Language Detection
+
 **Priority: HIGH**
+
 - [x] Integrate language detection libraries (franc, langdetect)
 - [x] Implement confidence scoring for auto-detection
 - [x] Add manual language override capabilities (service layer)
 - [x] Create language detection training data pipeline (N/A for current libraries - consider for custom models) <!-- skipped: 2024-12-19 -->
 
 ### 1.3 Improved Translation Quality
+
 - [x] Implement translation confidence scoring <!-- done: 2024-12-19 -->
 - [x] Add alternative translation suggestions <!-- done: 2024-12-19 -->
 - [x] Create translation history and favorites <!-- done: 2024-12-19 -->
@@ -48,11 +57,13 @@ npm install react-native-fs # for model file management
 ## Phase 2: Native Keyboard Implementation (Week 3-4)
 
 ### 2.1 Expo Bare Workflow Migration (Day 1)
+
 **Critical Step**: Eject from Expo managed workflow safely
 **Timeline**: 1 day
 **Prerequisites**: Backup project, clean git state
 
 **Step-by-step Migration:**
+
 - [x] Create git backup branch <!-- done: 2024-12-19 -->
 - [x] Clean package cache and node_modules <!-- done: 2024-12-19 -->
 - [x] Run `npx expo install --fix` to resolve dependencies <!-- done: 2024-12-19 -->
@@ -63,6 +74,7 @@ npm install react-native-fs # for model file management
 - [x] Update .gitignore for native files <!-- done: 2024-12-19 -->
 
 **Conflict Resolution Tips:**
+
 ```bash
 # If prebuild fails, try:
 npx expo install --fix
@@ -74,10 +86,12 @@ cd ios && pod install --repo-update
 ```
 
 ### 2.2 iOS Keyboard Extension Setup (Day 2)
+
 **Timeline**: 1 day
 **Goal**: Create minimal iOS keyboard extension target
 
 **Detailed Tasks:**
+
 - [x] Open ios/PolyglotKey.xcworkspace in Xcode <!-- done: 2024-12-19 (structure created) -->
 - [x] Add new Keyboard Extension target <!-- done: 2024-12-19 (structure created) -->
 - [x] Configure extension bundle identifier <!-- done: 2024-12-19 (structure created) -->
@@ -89,6 +103,7 @@ cd ios && pod install --repo-update
 - [x] Implement basic text input/output <!-- done: 2024-12-19 -->
 
 **Files to Create:**
+
 ```
 ios/PolyglotKeyboard/
 ├── KeyboardViewController.swift
@@ -99,10 +114,12 @@ ios/PolyglotKeyboard/
 ```
 
 ### 2.3 Android Input Method Service (Day 3)
+
 **Timeline**: 1 day  
 **Goal**: Create minimal Android IME service
 
 **Detailed Tasks:**
+
 - [x] Create Android IME service structure <!-- done: 2024-12-19 -->
 - [x] Implement PolyglotInputMethodService.kt <!-- done: 2024-12-19 -->
 - [x] Create keyboard layout XML files <!-- done: 2024-12-19 -->
@@ -114,6 +131,7 @@ ios/PolyglotKeyboard/
 - [x] Implement basic text input handling <!-- done: 2024-12-19 -->
 
 **Files to Create:**
+
 ```
 android/app/src/main/java/com/anonymous/boltexponativewind/
 ├── keyboard/
@@ -147,10 +165,12 @@ android/app/src/main/res/
 ```
 
 ### 2.4 React Native Bridge Implementation (Day 4)
+
 **Timeline**: 1 day
 **Goal**: Connect native keyboards to RN app logic
 
 **Detailed Tasks:**
+
 - [x] Create iOS native module for keyboard communication <!-- done: 2024-12-19 -->
 - [x] Create Android native module for keyboard communication <!-- done: 2024-12-19 -->
 - [x] Implement settings synchronization bridge <!-- done: 2024-12-19 -->
@@ -162,6 +182,7 @@ android/app/src/main/res/
 - [ ] Test bridge communication both ways
 
 **Bridge Files:**
+
 ```
 ios/PolyglotKey/NativeModules/
 ├── KeyboardBridge.h
@@ -175,10 +196,12 @@ android/app/src/main/java/com/polyglotkey/modules/
 ```
 
 ### 2.5 Integration Testing & Polish (Day 5)
+
 **Timeline**: 1 day
 **Goal**: End-to-end testing and refinement
 
 **Detailed Tasks:**
+
 - [ ] Test keyboard installation flow
 - [ ] Verify translation functionality works
 - [ ] Test settings synchronization
@@ -191,12 +214,14 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Documentation update
 
 ### 2.5 Integration Testing & Validation (Day 5)
+
 **Timeline**: 1 day
 **Goal**: End-to-end testing and device validation
 
 **Testing Tasks:**
+
 - [ ] Test keyboard installation flow on real iOS device
-- [ ] Test keyboard installation flow on real Android device  
+- [ ] Test keyboard installation flow on real Android device
 - [ ] Create screen recordings of installation process
 - [ ] Verify "password field → translation off" behavior
 - [ ] Document test results in validation table
@@ -207,10 +232,12 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Performance testing on low-end devices
 
 ### 2.6 UX Enhancements & Polish (Day 6)
+
 **Timeline**: 1 day  
 **Goal**: Advanced UX features and gesture shortcuts
 
 **Gesture Shortcuts:**
+
 - [ ] Scope gesture shortcuts implementation (swipe, long-press)
 - [ ] Document potential conflicts with system gestures
 - [ ] Implement swipe-to-translate gesture
@@ -218,6 +245,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Create gesture tutorial/onboarding
 
 **Theme Packs:**
+
 - [ ] Design theme system architecture
 - [ ] Implement dark/light theme switching
 - [ ] Create custom color scheme support
@@ -225,6 +253,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Provide ETA for theme pack marketplace
 
 **Advanced Features:**
+
 - [ ] Custom keyboard UI with translation suggestions
 - [ ] Real-time translation as user types
 - [ ] Language switching via long-press
@@ -237,10 +266,12 @@ android/app/src/main/java/com/polyglotkey/modules/
   - [ ] Material Design 3 compliance
 
 ### 2.7 Pre-Phase 3 Setup & CI Pipeline (Day 7)
+
 **Timeline**: 1 day
 **Goal**: Finalize Phase 2 and prepare for Phase 3
 
 **CI/CD Pipeline Setup:**
+
 - [ ] Configure GitHub Actions for keyboard builds
 - [ ] Set up build → lint → unit test → e2e test pipeline
 - [ ] Add Android keyboard APK build automation
@@ -250,6 +281,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Set up performance monitoring and alerts
 
 **Phase 2 Completion:**
+
 - [ ] Ensure all Phase 2 tasks have done: YYYY-MM-DD timestamps
 - [ ] Create comprehensive Phase 2 completion report
 - [ ] Document known issues and technical debt
@@ -257,16 +289,17 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Archive Phase 2 artifacts and learnings
 
 **Quality Gates:**
+
 - [ ] Zero critical bugs in keyboard functionality
 - [ ] 100% Phase 2 roadmap task completion
 - [ ] Successful keyboard installation on 3+ real devices
 - [ ] Performance benchmarks documented
 - [ ] Security audit completed for keyboard extension
 
-  
   ## Phase 3: Advanced Features (Week 5-6)
 
 ### 3.1 Model Management System
+
 - [x] Implement progressive model downloading <!-- done: 2024-12-19 -->
 - [ ] Add model compression and optimization
 - [ ] Create model update mechanism
@@ -274,6 +307,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Add model performance monitoring
 
 ### 3.2 Privacy & Security Enhancements
+
 - [ ] Implement end-to-end encryption for settings
 - [ ] Add secure model storage
 - [ ] Create privacy audit logging
@@ -281,6 +315,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Add GDPR compliance features
 
 ### 3.3 Performance Optimization
+
 - [ ] Implement model quantization (8-bit)
 - [ ] Add GPU acceleration where available
 - [ ] Optimize memory usage for background processing
@@ -288,6 +323,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Add performance analytics
 
 ### 3.4 User Experience Polish
+
 - [ ] Add onboarding flow with keyboard setup
 - [ ] Implement contextual help system
 - [ ] Create keyboard themes and customization
@@ -297,13 +333,16 @@ android/app/src/main/java/com/polyglotkey/modules/
 ## Phase 4: Testing & Quality Assurance (Week 7)
 
 ### 4.1 Automated Testing
+
 **Test Files to Create:**
+
 - `__tests__/translation/` - Translation accuracy tests
 - `__tests__/keyboard/` - Keyboard functionality tests
 - `__tests__/performance/` - Performance benchmarks
 - `__tests__/accessibility/` - Accessibility compliance tests
 
 ### 4.2 Device Testing
+
 - [ ] Test on iOS 15+ devices (iPhone 12+, iPad)
 - [ ] Test on Android 8+ devices (various OEMs)
 - [ ] Performance testing on low-end devices
@@ -311,6 +350,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Memory leak detection and fixing
 
 ### 4.3 Beta Testing Program
+
 - [ ] Set up TestFlight for iOS beta
 - [ ] Configure Google Play Internal Testing
 - [ ] Create feedback collection system
@@ -320,7 +360,9 @@ android/app/src/main/java/com/polyglotkey/modules/
 ## Phase 5: Store Preparation & Deployment (Week 8)
 
 ### 5.1 App Store Assets
+
 **iOS App Store:**
+
 - [ ] App icons (all required sizes)
 - [ ] Screenshots for all device types
 - [ ] App preview videos
@@ -328,12 +370,14 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Privacy policy and terms of service
 
 **Google Play Store:**
+
 - [ ] Feature graphic and icon
 - [ ] Screenshots for phones and tablets
 - [ ] Short and full descriptions
 - [ ] Store listing optimization
 
 ### 5.2 Compliance & Legal
+
 - [ ] Privacy policy creation and hosting
 - [ ] Terms of service documentation
 - [ ] COPPA compliance (if applicable)
@@ -341,7 +385,9 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [ ] Open source license compliance
 
 ### 5.3 Release Configuration
+
 **iOS Release:**
+
 ```bash
 # Build for App Store
 npx expo run:ios --configuration Release
@@ -349,6 +395,7 @@ npx expo run:ios --configuration Release
 ```
 
 **Android Release:**
+
 ```bash
 # Generate signed APK/AAB
 npx expo run:android --variant release
@@ -358,6 +405,7 @@ npx expo run:android --variant release
 ## Phase 6: Post-Launch Optimization (Week 9+)
 
 ### 6.1 Analytics & Monitoring
+
 - [ ] User engagement tracking
 - [ ] Translation accuracy monitoring
 - [ ] Performance metrics collection
@@ -365,6 +413,7 @@ npx expo run:android --variant release
 - [ ] User feedback analysis
 
 ### 6.2 Iterative Improvements
+
 - [ ] A/B testing for UI improvements
 - [ ] Model accuracy improvements
 - [ ] New language additions
@@ -374,18 +423,21 @@ npx expo run:android --variant release
 ## Technical Architecture Decisions
 
 ### Model Strategy
+
 1. **Starter Pack**: English ↔ Spanish, French, German (most popular)
 2. **Progressive Download**: Additional languages on-demand
 3. **Model Size**: Target <15MB per language pair
 4. **Fallback**: Cloud API option for unsupported languages
 
 ### Performance Targets
+
 - **Translation Speed**: <500ms for short phrases
 - **Memory Usage**: <50MB background, <100MB active
 - **Battery Impact**: <2% per hour of active use
 - **Storage**: <200MB for 10 language pairs
 
 ### Monetization Strategy
+
 - **Free Tier**: 3 language pairs, basic features
 - **Pro Subscription**: All languages, cloud assist, themes
 - **Enterprise**: Custom models, API access, white-label
@@ -393,6 +445,7 @@ npx expo run:android --variant release
 ## Development Tools & Setup
 
 ### Required Development Environment
+
 ```bash
 # iOS Development
 - Xcode 15+
@@ -411,6 +464,7 @@ npx expo run:android --variant release
 ```
 
 ### Recommended VS Code Extensions
+
 - React Native Tools
 - TypeScript Importer
 - Prettier
@@ -421,12 +475,14 @@ npx expo run:android --variant release
 ## Risk Mitigation
 
 ### Technical Risks
+
 1. **Model Size**: Use quantization and compression
 2. **Performance**: Implement background processing
 3. **Compatibility**: Extensive device testing
 4. **Store Approval**: Follow platform guidelines strictly
 
 ### Business Risks
+
 1. **Competition**: Focus on privacy differentiator
 2. **User Adoption**: Invest in onboarding UX
 3. **Monetization**: Start with freemium model
@@ -435,12 +491,14 @@ npx expo run:android --variant release
 ## Success Metrics
 
 ### Launch Targets (Month 1)
+
 - [ ] 1,000+ downloads
 - [ ] 4.0+ store rating
 - [ ] <1% crash rate
 - [ ] 50%+ keyboard activation rate
 
 ### Growth Targets (Month 3)
+
 - [ ] 10,000+ active users
 - [ ] 5%+ conversion to Pro
 - [ ] 10+ supported languages

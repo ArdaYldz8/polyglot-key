@@ -16,7 +16,7 @@ export interface TranslationResult {
   processingTime: number;
   // The fields below are from MlService's TranslationResult and TranslationHistoryItem
   // and should be part of a more comprehensive result type if this one is kept.
-  modelId?: string; 
+  modelId?: string;
   translationConfidence?: number; // Renaming 'confidence' to 'translationConfidence' for clarity
   detectionConfidence?: number;
   alternatives?: AlternativeTranslation[];
@@ -29,7 +29,7 @@ export interface AlternativeTranslation {
 }
 
 /**
- * AppTranslationResult is the comprehensive type intended for use in the UI state 
+ * AppTranslationResult is the comprehensive type intended for use in the UI state
  * and as the object passed around after a translation operation, containing all relevant details.
  */
 export interface AppTranslationResult {
@@ -50,7 +50,7 @@ export interface AppTranslationResult {
     timeTaken?: number; // Processing time from ML service
   }; // Result from the core translation (e.g., mlService)
   // Redundant fields for easier access, derived from above or set directly
-  modelId?: string; 
+  modelId?: string;
   translationConfidence?: number;
   detectionConfidence?: number;
   processingTime?: number; // Could be from translationAPIResult.timeTaken or UI calculated

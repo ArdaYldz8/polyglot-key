@@ -42,7 +42,7 @@ export class ModelManager {
     maxConcurrentDownloads: 2,
     prioritizeByUsage: true,
     downloadOnWifiOnly: false,
-    maxStorageUsage: 500 * 1024 * 1024 // 500MB default
+    maxStorageUsage: 500 * 1024 * 1024, // 500MB default
   };
 
   private constructor() {
@@ -87,7 +87,7 @@ export class ModelManager {
           priority,
           downloadSize: (config.size || 15) * 1024 * 1024, // Convert MB to bytes
           usageCount: 0,
-          lastUsed: undefined
+          lastUsed: undefined,
         });
 
         if (isDownloaded) {
@@ -108,28 +108,41 @@ export class ModelManager {
   private calculateModelPriority(config: ModelConfigItem): number {
     // Language popularity scores (higher = more popular)
     const languagePopularity: { [key: string]: number } = {
-      'en': 100, 'es': 90, 'fr': 80, 'de': 70, 'it': 60,
-      'pt': 55, 'ru': 50, 'ja': 45, 'ko': 40, 'zh': 85,
-      'ar': 35, 'hi': 30, 'tr': 25, 'nl': 20, 'sv': 15
+      en: 100,
+      es: 90,
+      fr: 80,
+      de: 70,
+      it: 60,
+      pt: 55,
+      ru: 50,
+      ja: 45,
+      ko: 40,
+      zh: 85,
+      ar: 35,
+      hi: 30,
+      tr: 25,
+      nl: 20,
+      sv: 15,
     };
 
     const srcPop = languagePopularity[config.srcLang] || 10;
     const targetPop = languagePopularity[config.targetLang] || 10;
-    
+
     // Base priority is average of source and target popularity
     let priority = (srcPop + targetPop) / 2;
-    
+
     // Boost English pairs (most commonly requested)
     if (config.srcLang === 'en' || config.targetLang === 'en') {
       priority += 20;
     }
-    
+
     // Penalize very large models slightly
     const sizeInBytes = (config.size || 15) * 1024 * 1024;
-    if (sizeInBytes > 50 * 1024 * 1024) { // > 50MB
+    if (sizeInBytes > 50 * 1024 * 1024) {
+      // > 50MB
       priority -= 10;
     }
-    
+
     return Math.max(1, Math.round(priority));
   }
 
@@ -138,15 +151,20 @@ export class ModelManager {
    */
   public async startProgressiveDownloading(): Promise<void> {
     console.log('Starting progressive model downloading...');
-    
+
     // Get undownloaded models sorted by priority
     const undownloadedModels = Array.from(this.models.values())
-      .filter(model => !model.isDownloaded)
+      .filter((model) => !model.isDownloaded)
       .sort((a, b) => (b.priority || 0) - (a.priority || 0));
 
     // Add high-priority models to download queue
-    for (const model of undownloadedModels.slice(0, 5)) { // Top 5 priority models
-      this.addToDownloadQueue(model.id, model.priority || 1, model.downloadSize || 15 * 1024 * 1024);
+    for (const model of undownloadedModels.slice(0, 5)) {
+      // Top 5 priority models
+      this.addToDownloadQueue(
+        model.id,
+        model.priority || 1,
+        model.downloadSize || 15 * 1024 * 1024,
+      );
     }
 
     // Process the download queue
@@ -156,9 +174,16 @@ export class ModelManager {
   /**
    * Add a model to the progressive download queue
    */
-  public addToDownloadQueue(modelId: string, priority: number, estimatedSize: number): void {
+  public addToDownloadQueue(
+    modelId: string,
+    priority: number,
+    estimatedSize: number,
+  ): void {
     // Check if already in queue or downloading
-    if (this.downloadQueue.some(item => item.modelId === modelId) || this.activeDownloads.has(modelId)) {
+    if (
+      this.downloadQueue.some((item) => item.modelId === modelId) ||
+      this.activeDownloads.has(modelId)
+    ) {
       return;
     }
 
@@ -166,16 +191,18 @@ export class ModelManager {
       modelId,
       priority,
       estimatedSize,
-      addedAt: new Date()
+      addedAt: new Date(),
     };
 
     this.downloadQueue.push(queueItem);
-    
+
     // Sort queue by priority (highest first)
     this.downloadQueue.sort((a, b) => b.priority - a.priority);
-    
-    console.log(`Added model ${modelId} to download queue (priority: ${priority})`);
-    
+
+    console.log(
+      `Added model ${modelId} to download queue (priority: ${priority})`,
+    );
+
     // Try to process the queue
     this.processDownloadQueue();
   }
@@ -185,15 +212,20 @@ export class ModelManager {
    */
   private async processDownloadQueue(): Promise<void> {
     const maxConcurrent = this.progressiveOptions.maxConcurrentDownloads || 2;
-    
+
     // Check if we can start more downloads
-    while (this.activeDownloads.size < maxConcurrent && this.downloadQueue.length > 0) {
+    while (
+      this.activeDownloads.size < maxConcurrent &&
+      this.downloadQueue.length > 0
+    ) {
       const nextItem = this.downloadQueue.shift();
       if (!nextItem) break;
 
       // Check storage constraints
       if (await this.wouldExceedStorageLimit(nextItem.estimatedSize)) {
-        console.log(`Skipping download of ${nextItem.modelId} due to storage constraints`);
+        console.log(
+          `Skipping download of ${nextItem.modelId} due to storage constraints`,
+        );
         continue;
       }
 
@@ -205,12 +237,15 @@ export class ModelManager {
   /**
    * Check if downloading a model would exceed storage limits
    */
-  private async wouldExceedStorageLimit(additionalSize: number): Promise<boolean> {
+  private async wouldExceedStorageLimit(
+    additionalSize: number,
+  ): Promise<boolean> {
     try {
       const currentUsage = await this.getCurrentStorageUsage();
-      const maxUsage = this.progressiveOptions.maxStorageUsage || 500 * 1024 * 1024;
-      
-      return (currentUsage + additionalSize) > maxUsage;
+      const maxUsage =
+        this.progressiveOptions.maxStorageUsage || 500 * 1024 * 1024;
+
+      return currentUsage + additionalSize > maxUsage;
     } catch (error) {
       console.error('Error checking storage limits:', error);
       return false; // Allow download if we can't check
@@ -234,16 +269,19 @@ export class ModelManager {
    */
   private async downloadModelProgressively(modelId: string): Promise<void> {
     this.activeDownloads.add(modelId);
-    
+
     try {
       console.log(`Starting progressive download of model: ${modelId}`);
       await this.downloadModel(modelId);
       console.log(`Completed progressive download of model: ${modelId}`);
     } catch (error) {
-      console.error(`Failed to progressively download model ${modelId}:`, error);
+      console.error(
+        `Failed to progressively download model ${modelId}:`,
+        error,
+      );
     } finally {
       this.activeDownloads.delete(modelId);
-      
+
       // Continue processing queue
       this.processDownloadQueue();
     }
@@ -252,7 +290,10 @@ export class ModelManager {
   /**
    * Request a model with intelligent prioritization
    */
-  public async requestModel(modelId: string, urgent: boolean = false): Promise<ModelInfo> {
+  public async requestModel(
+    modelId: string,
+    urgent: boolean = false,
+  ): Promise<ModelInfo> {
     const model = this.models.get(modelId);
     if (!model) {
       throw new Error(`Model with ID ${modelId} not found in configurations.`);
@@ -262,7 +303,7 @@ export class ModelManager {
     const updatedModel = {
       ...model,
       usageCount: (model.usageCount || 0) + 1,
-      lastUsed: new Date()
+      lastUsed: new Date(),
     };
     this.models.set(modelId, updatedModel);
 
@@ -273,13 +314,19 @@ export class ModelManager {
 
     // If urgent, download immediately
     if (urgent) {
-      console.log(`Urgent request for model ${modelId}, downloading immediately`);
+      console.log(
+        `Urgent request for model ${modelId}, downloading immediately`,
+      );
       return this.downloadModel(modelId);
     }
 
     // Otherwise, add to priority queue with boosted priority
     const boostedPriority = (model.priority || 1) + 50; // Boost priority for requested models
-    this.addToDownloadQueue(modelId, boostedPriority, model.downloadSize || 15 * 1024 * 1024);
+    this.addToDownloadQueue(
+      modelId,
+      boostedPriority,
+      model.downloadSize || 15 * 1024 * 1024,
+    );
 
     return updatedModel;
   }
@@ -287,9 +334,14 @@ export class ModelManager {
   /**
    * Configure progressive download options
    */
-  public configureProgressiveDownloading(options: Partial<ProgressiveDownloadOptions>): void {
+  public configureProgressiveDownloading(
+    options: Partial<ProgressiveDownloadOptions>,
+  ): void {
     this.progressiveOptions = { ...this.progressiveOptions, ...options };
-    console.log('Progressive download options updated:', this.progressiveOptions);
+    console.log(
+      'Progressive download options updated:',
+      this.progressiveOptions,
+    );
   }
 
   /**
@@ -304,8 +356,8 @@ export class ModelManager {
     return {
       queueLength: this.downloadQueue.length,
       activeDownloads: this.activeDownloads.size,
-      queuedModels: this.downloadQueue.map(item => item.modelId),
-      activeModels: Array.from(this.activeDownloads)
+      queuedModels: this.downloadQueue.map((item) => item.modelId),
+      activeModels: Array.from(this.activeDownloads),
     };
   }
 
@@ -358,12 +410,14 @@ export class ModelManager {
         background: true,
         progress: (res: { bytesWritten: number; contentLength: number }) => {
           const progress = res.bytesWritten / res.contentLength;
-          console.log(`Download progress for ${modelId}: ${Math.round(progress * 100)}%`);
-          
+          console.log(
+            `Download progress for ${modelId}: ${Math.round(progress * 100)}%`,
+          );
+
           // Update the model info with progress
           const updatedModel = { ...modelConfig, downloadProgress: progress };
           this.models.set(modelId, updatedModel);
-        }
+        },
       }).promise;
 
       console.log(`Model ${modelId} downloaded successfully.`);
@@ -375,7 +429,7 @@ export class ModelManager {
         localPath: modelJsonPath,
         isDownloaded: true,
         downloadProgress: 1,
-        lastChecked: new Date()
+        lastChecked: new Date(),
       };
       this.models.set(modelId, updatedModel);
 
@@ -386,7 +440,10 @@ export class ModelManager {
     }
   }
 
-  public async getModel(modelId: string, forceDownload = false): Promise<ModelInfo> {
+  public async getModel(
+    modelId: string,
+    forceDownload = false,
+  ): Promise<ModelInfo> {
     const modelInfo = this.models.get(modelId);
     if (!modelInfo) {
       throw new Error(`Model with ID ${modelId} not found in configurations.`);
@@ -403,7 +460,9 @@ export class ModelManager {
   public async getModelPath(modelId: string): Promise<string> {
     const modelInfo = await this.getModel(modelId);
     if (!modelInfo.localPath) {
-      throw new Error(`Model ${modelId} has no local path. It may not be downloaded yet.`);
+      throw new Error(
+        `Model ${modelId} has no local path. It may not be downloaded yet.`,
+      );
     }
     return modelInfo.localPath;
   }
@@ -412,23 +471,25 @@ export class ModelManager {
     // In a real app, you would fetch the latest model versions from a server
     // and compare them with the local versions to determine if updates are needed.
     // For this prototype, we'll simulate this check with a simplified approach.
-    
+
     console.log('Checking for model updates...');
-    
+
     // Simulate checking for updates by logging the current models
     // Use Array.from to avoid downlevelIteration issues
     Array.from(this.models.entries()).forEach(([modelId, modelInfo]) => {
-      console.log(`Model ${modelId}: version ${modelInfo.version}, downloaded: ${modelInfo.isDownloaded}`);
-      
+      console.log(
+        `Model ${modelId}: version ${modelInfo.version}, downloaded: ${modelInfo.isDownloaded}`,
+      );
+
       // Update the last checked timestamp
-      const updatedModel = { 
+      const updatedModel = {
         ...modelInfo,
         id: modelId,
-        lastChecked: new Date() 
+        lastChecked: new Date(),
       };
       this.models.set(modelId, updatedModel);
     });
-    
+
     // In a real application, you would implement actual version checking here
     // and re-download models that have newer versions available
   }
@@ -436,26 +497,26 @@ export class ModelManager {
   public getAvailableModels(): ModelInfo[] {
     return Array.from(this.models.values());
   }
-  
+
   public async deleteModel(modelId: string): Promise<void> {
     const modelInfo = this.models.get(modelId);
     if (!modelInfo || !modelInfo.isDownloaded || !modelInfo.localPath) {
       console.log(`Model ${modelId} is not downloaded or doesn't exist.`);
       return;
     }
-    
+
     const modelDir = `${this.modelDir}/${modelId}`;
     try {
       await FileSystem.unlink(modelDir);
       console.log(`Model ${modelId} deleted successfully.`);
-      
+
       // Update the model info
       const updatedModel = {
         ...modelInfo,
         id: modelId,
         localPath: undefined,
         isDownloaded: false,
-        downloadProgress: undefined
+        downloadProgress: undefined,
       };
       this.models.set(modelId, updatedModel);
     } catch (error) {

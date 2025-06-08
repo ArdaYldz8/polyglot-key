@@ -1,5 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import { Language } from '@/types/translation';
 import { ChevronDown } from 'lucide-react-native';
 
@@ -18,7 +24,7 @@ export function LanguageSelector({
   onLanguageSelect,
   expanded,
   onToggle,
-  title
+  title,
 }: LanguageSelectorProps) {
   return (
     <View style={styles.container}>
@@ -26,21 +32,25 @@ export function LanguageSelector({
       <TouchableOpacity style={styles.selector} onPress={onToggle}>
         <Text style={styles.flag}>{selectedLanguage.flag}</Text>
         <Text style={styles.languageName}>{selectedLanguage.name}</Text>
-        <ChevronDown 
-          size={20} 
-          color="#6b7280" 
-          style={[styles.chevron, expanded && styles.chevronRotated]} 
+        <ChevronDown
+          size={20}
+          color="#6b7280"
+          style={[styles.chevron, expanded && styles.chevronRotated]}
         />
       </TouchableOpacity>
-      
+
       {expanded && (
-        <ScrollView style={styles.dropdown} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.dropdown}
+          showsVerticalScrollIndicator={false}
+        >
           {languages.map((language) => (
             <TouchableOpacity
               key={language.code}
               style={[
                 styles.languageOption,
-                selectedLanguage.code === language.code && styles.selectedOption
+                selectedLanguage.code === language.code &&
+                  styles.selectedOption,
               ]}
               onPress={() => {
                 onLanguageSelect(language);
@@ -50,7 +60,9 @@ export function LanguageSelector({
               <Text style={styles.optionFlag}>{language.flag}</Text>
               <View style={styles.languageInfo}>
                 <Text style={styles.optionName}>{language.name}</Text>
-                <Text style={styles.optionNativeName}>{language.nativeName}</Text>
+                <Text style={styles.optionNativeName}>
+                  {language.nativeName}
+                </Text>
               </View>
             </TouchableOpacity>
           ))}

@@ -1,19 +1,19 @@
 import React, { useState, useCallback } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView, 
-  StyleSheet, 
-  Alert 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  StyleSheet,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowUpDown, Clipboard, Sparkles } from 'lucide-react-native';
 import { LanguageSelector } from '@/components/LanguageSelector';
 import { TranslationCard } from '@/components/TranslationCard';
 import { translationService } from '@/services/translationService';
-import { languageDetectionService } from '@/services/languageDetectionService';
+// import { languageDetectionService } from '@/services/languageDetectionService';
 import { Language, TranslationResult } from '@/types/translation';
 import { LANGUAGES } from '@/constants/languages';
 import * as ClipboardModule from 'expo-clipboard';
@@ -24,7 +24,9 @@ export default function TranslateScreen() {
   const [targetLanguage, setTargetLanguage] = useState<Language>(LANGUAGES[1]);
   const [sourceExpanded, setSourceExpanded] = useState(false);
   const [targetExpanded, setTargetExpanded] = useState(false);
-  const [translationResults, setTranslationResults] = useState<TranslationResult[]>([]);
+  const [translationResults, setTranslationResults] = useState<
+    TranslationResult[]
+  >([]);
   const [isTranslating, setIsTranslating] = useState(false);
 
   const handleSwapLanguages = useCallback(() => {
@@ -43,7 +45,7 @@ export default function TranslateScreen() {
       const translatedText = await translationService.translate(
         inputText,
         sourceLanguage,
-        targetLanguage
+        targetLanguage,
       );
 
       const processingTime = Date.now() - startTime;
@@ -58,10 +60,13 @@ export default function TranslateScreen() {
         processingTime,
       };
 
-      setTranslationResults(prev => [result, ...prev.slice(0, 9)]); // Keep last 10
+      setTranslationResults((prev) => [result, ...prev.slice(0, 9)]); // Keep last 10
       setInputText('');
     } catch (error) {
-      Alert.alert('Translation Error', 'Failed to translate text. Please try again.');
+      Alert.alert(
+        'Translation Error',
+        'Failed to translate text. Please try again.',
+      );
     } finally {
       setIsTranslating(false);
     }
@@ -72,7 +77,7 @@ export default function TranslateScreen() {
       const clipboardText = await ClipboardModule.getStringAsync();
       if (clipboardText && clipboardText.length > 0) {
         setInputText(clipboardText);
-        
+
         // Auto-detect language if different from current source
         // TODO: Fix language detection integration
         // const detectedLanguage = await languageDetectionService.detectLanguage(clipboardText);
@@ -92,14 +97,19 @@ export default function TranslateScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <Sparkles size={24} color="#3b82f6" />
             <Text style={styles.headerTitle}>Polyglot Key</Text>
           </View>
-          <Text style={styles.headerSubtitle}>Privacy-first real-time translation</Text>
+          <Text style={styles.headerSubtitle}>
+            Privacy-first real-time translation
+          </Text>
         </View>
 
         {/* Language Selectors */}
@@ -115,11 +125,14 @@ export default function TranslateScreen() {
               setTargetExpanded(false);
             }}
           />
-          
-          <TouchableOpacity style={styles.swapButton} onPress={handleSwapLanguages}>
+
+          <TouchableOpacity
+            style={styles.swapButton}
+            onPress={handleSwapLanguages}
+          >
             <ArrowUpDown size={20} color="#6b7280" />
           </TouchableOpacity>
-          
+
           <LanguageSelector
             title="To"
             selectedLanguage={targetLanguage}
@@ -144,15 +157,22 @@ export default function TranslateScreen() {
             multiline
             textAlignVertical="top"
           />
-          
+
           <View style={styles.inputActions}>
-            <TouchableOpacity style={styles.secondaryButton} onPress={handlePasteAndTranslate}>
+            <TouchableOpacity
+              style={styles.secondaryButton}
+              onPress={handlePasteAndTranslate}
+            >
               <Clipboard size={16} color="#6b7280" />
               <Text style={styles.secondaryButtonText}>Paste & Detect</Text>
             </TouchableOpacity>
-            
-            <TouchableOpacity 
-              style={[styles.primaryButton, (!inputText.trim() || isTranslating) && styles.primaryButtonDisabled]}
+
+            <TouchableOpacity
+              style={[
+                styles.primaryButton,
+                (!inputText.trim() || isTranslating) &&
+                  styles.primaryButtonDisabled,
+              ]}
               onPress={handleTranslate}
               disabled={!inputText.trim() || isTranslating}
             >
@@ -166,7 +186,9 @@ export default function TranslateScreen() {
         {/* Privacy Indicator */}
         <View style={styles.privacyIndicator}>
           <View style={styles.privacyDot} />
-          <Text style={styles.privacyText}>Processing locally • Zero data sent to servers</Text>
+          <Text style={styles.privacyText}>
+            Processing locally • Zero data sent to servers
+          </Text>
         </View>
 
         {/* Translation Results */}

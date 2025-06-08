@@ -1,22 +1,22 @@
 import React from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  ScrollView, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
   StyleSheet,
-  Linking 
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Info, 
-  Github, 
-  Heart, 
-  Shield, 
-  Globe, 
+import {
+  Info,
+  Github,
+  Heart,
+  Shield,
+  Globe,
   Zap,
   Users,
-  ExternalLink
+  ExternalLink,
 } from 'lucide-react-native';
 
 export default function AboutScreen() {
@@ -24,19 +24,17 @@ export default function AboutScreen() {
     Linking.openURL(url);
   };
 
-  const FeatureCard = ({ 
-    icon, 
-    title, 
-    description 
+  const FeatureCard = ({
+    icon,
+    title,
+    description,
   }: {
     icon: React.ReactNode;
     title: string;
     description: string;
   }) => (
     <View style={styles.featureCard}>
-      <View style={styles.featureIcon}>
-        {icon}
-      </View>
+      <View style={styles.featureIcon}>{icon}</View>
       <View style={styles.featureContent}>
         <Text style={styles.featureTitle}>{title}</Text>
         <Text style={styles.featureDescription}>{description}</Text>
@@ -44,24 +42,22 @@ export default function AboutScreen() {
     </View>
   );
 
-  const LinkItem = ({ 
-    icon, 
-    title, 
-    subtitle, 
-    url 
+  const LinkItem = ({
+    icon,
+    title,
+    subtitle,
+    url,
   }: {
     icon: React.ReactNode;
     title: string;
     subtitle: string;
     url: string;
   }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={styles.linkItem}
       onPress={() => handleLinkPress(url)}
     >
-      <View style={styles.linkIcon}>
-        {icon}
-      </View>
+      <View style={styles.linkIcon}>{icon}</View>
       <View style={styles.linkContent}>
         <Text style={styles.linkTitle}>{title}</Text>
         <Text style={styles.linkSubtitle}>{subtitle}</Text>
@@ -72,14 +68,19 @@ export default function AboutScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <Info size={24} color="#3b82f6" />
             <Text style={styles.headerTitle}>About</Text>
           </View>
-          <Text style={styles.headerSubtitle}>Privacy-first translation keyboard</Text>
+          <Text style={styles.headerSubtitle}>
+            Privacy-first translation keyboard
+          </Text>
         </View>
 
         {/* App Info */}
@@ -90,33 +91,34 @@ export default function AboutScreen() {
           <Text style={styles.appName}>Polyglot Key</Text>
           <Text style={styles.appVersion}>Version 1.0.0 (Demo)</Text>
           <Text style={styles.appDescription}>
-            A privacy-first, real-time translation keyboard that works completely offline. 
-            Translate between 55+ languages without sending your data to any servers.
+            A privacy-first, real-time translation keyboard that works
+            completely offline. Translate between 55+ languages without sending
+            your data to any servers.
           </Text>
         </View>
 
         {/* Key Features */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Key Features</Text>
-          
+
           <FeatureCard
             icon={<Shield size={20} color="#10b981" />}
             title="Privacy First"
             description="All translations happen on your device. Zero data leaves your phone."
           />
-          
+
           <FeatureCard
             icon={<Zap size={20} color="#f59e0b" />}
             title="Real-time Translation"
             description="See translations as you type with instant suggestion strips."
           />
-          
+
           <FeatureCard
             icon={<Globe size={20} color="#3b82f6" />}
             title="55+ Languages"
             description="Support for major world languages with offline models."
           />
-          
+
           <FeatureCard
             icon={<Users size={20} color="#ec4899" />}
             title="Open Source"
@@ -150,21 +152,21 @@ export default function AboutScreen() {
         {/* Links */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Links</Text>
-          
+
           <LinkItem
             icon={<Github size={20} color="#1f2937" />}
             title="Source Code"
             subtitle="View on GitHub"
             url="https://github.com/polyglot-key"
           />
-          
+
           <LinkItem
             icon={<Heart size={20} color="#ef4444" />}
             title="Support Development"
             subtitle="Help fund open-source development"
             url="https://github.com/sponsors/polyglot-key"
           />
-          
+
           <LinkItem
             icon={<Shield size={20} color="#059669" />}
             title="Privacy Policy"
@@ -177,8 +179,9 @@ export default function AboutScreen() {
         <View style={styles.licenseSection}>
           <Text style={styles.licenseTitle}>Open Source Licenses</Text>
           <Text style={styles.licenseText}>
-            This app is built with open-source components under various licenses including MIT, Apache-2.0, and CC-BY-4.0. 
-            Translation models are provided by Helsinki-NLP under Creative Commons licensing.
+            This app is built with open-source components under various licenses
+            including MIT, Apache-2.0, and CC-BY-4.0. Translation models are
+            provided by Helsinki-NLP under Creative Commons licensing.
           </Text>
         </View>
 

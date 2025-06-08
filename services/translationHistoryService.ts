@@ -23,8 +23,8 @@ export class TranslationHistoryService {
   private isLoaded: boolean = false;
 
   private constructor() {
-    this._loadHistoryFromFile().catch(error => 
-      console.error('Failed to load translation history on init:', error)
+    this._loadHistoryFromFile().catch((error) =>
+      console.error('Failed to load translation history on init:', error),
     );
   }
 
@@ -50,7 +50,9 @@ export class TranslationHistoryService {
         console.log('Translation history loaded successfully.');
       } else {
         this.history = [];
-        console.log('No existing translation history file found. Initializing empty history.');
+        console.log(
+          'No existing translation history file found. Initializing empty history.',
+        );
       }
     } catch (error) {
       console.error('Error loading translation history:', error);
@@ -73,11 +75,18 @@ export class TranslationHistoryService {
   public async getHistory(count?: number): Promise<TranslationHistoryItem[]> {
     await this._ensureLoaded();
     // Return a copy to prevent direct modification of the internal array
-    const sortedHistory = [...this.history].sort((a, b) => b.timestamp - a.timestamp);
+    const sortedHistory = [...this.history].sort(
+      (a, b) => b.timestamp - a.timestamp,
+    );
     return count ? sortedHistory.slice(0, count) : sortedHistory;
   }
 
-  public async addTranslation(itemDetails: Omit<TranslationHistoryItem, 'id' | 'timestamp' | 'isFavorite'>): Promise<TranslationHistoryItem> {
+  public async addTranslation(
+    itemDetails: Omit<
+      TranslationHistoryItem,
+      'id' | 'timestamp' | 'isFavorite'
+    >,
+  ): Promise<TranslationHistoryItem> {
     await this._ensureLoaded();
     const newItem: TranslationHistoryItem = {
       ...itemDetails,
@@ -95,9 +104,11 @@ export class TranslationHistoryService {
     return newItem;
   }
 
-  public async toggleFavorite(itemId: string): Promise<TranslationHistoryItem | undefined> {
+  public async toggleFavorite(
+    itemId: string,
+  ): Promise<TranslationHistoryItem | undefined> {
     await this._ensureLoaded();
-    const itemIndex = this.history.findIndex(item => item.id === itemId);
+    const itemIndex = this.history.findIndex((item) => item.id === itemId);
     if (itemIndex > -1) {
       this.history[itemIndex].isFavorite = !this.history[itemIndex].isFavorite;
       await this._saveHistoryToFile();
@@ -110,7 +121,7 @@ export class TranslationHistoryService {
   public async deleteTranslation(itemId: string): Promise<void> {
     await this._ensureLoaded();
     const initialLength = this.history.length;
-    this.history = this.history.filter(item => item.id !== itemId);
+    this.history = this.history.filter((item) => item.id !== itemId);
     if (this.history.length < initialLength) {
       await this._saveHistoryToFile();
       console.log(`Translation item ${itemId} deleted.`);
@@ -128,13 +139,16 @@ export class TranslationHistoryService {
   public async getFavorites(): Promise<TranslationHistoryItem[]> {
     await this._ensureLoaded();
     return [...this.history]
-      .filter(item => item.isFavorite)
+      .filter((item) => item.isFavorite)
       .sort((a, b) => b.timestamp - a.timestamp);
   }
 
-  public async submitFeedback(itemId: string, feedbackScore: number): Promise<TranslationHistoryItem | undefined> {
+  public async submitFeedback(
+    itemId: string,
+    feedbackScore: number,
+  ): Promise<TranslationHistoryItem | undefined> {
     await this._ensureLoaded();
-    const itemIndex = this.history.findIndex(item => item.id === itemId);
+    const itemIndex = this.history.findIndex((item) => item.id === itemId);
     if (itemIndex > -1) {
       this.history[itemIndex].qualityFeedback = feedbackScore;
       await this._saveHistoryToFile();
@@ -147,4 +161,5 @@ export class TranslationHistoryService {
 }
 
 // Create a singleton instance of the service
-export const translationHistoryService = TranslationHistoryService.getInstance();
+export const translationHistoryService =
+  TranslationHistoryService.getInstance();

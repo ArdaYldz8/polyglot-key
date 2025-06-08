@@ -32,7 +32,12 @@ export const LANGUAGES: Language[] = [
   { code: 'he', name: 'Hebrew', nativeName: 'עברית', flag: '🇮🇱' },
   { code: 'th', name: 'Thai', nativeName: 'ไทย', flag: '🇹🇭' },
   { code: 'vi', name: 'Vietnamese', nativeName: 'Tiếng Việt', flag: '🇻🇳' },
-  { code: 'id', name: 'Indonesian', nativeName: 'Bahasa Indonesia', flag: '🇮🇩' },
+  {
+    code: 'id',
+    name: 'Indonesian',
+    nativeName: 'Bahasa Indonesia',
+    flag: '🇮🇩',
+  },
   { code: 'ms', name: 'Malay', nativeName: 'Bahasa Melayu', flag: '🇲🇾' },
   { code: 'tl', name: 'Filipino', nativeName: 'Filipino', flag: '🇵🇭' },
   { code: 'sw', name: 'Swahili', nativeName: 'Kiswahili', flag: '🇹🇿' },

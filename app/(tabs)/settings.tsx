@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  ScrollView, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
   StyleSheet,
-  Switch 
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  Settings as SettingsIcon, 
-  Download, 
-  Shield, 
-  Palette, 
-  Globe, 
+import {
+  Settings as SettingsIcon,
+  Download,
+  Shield,
+  Palette,
+  Globe,
   ChevronRight,
   HardDrive,
   Wifi,
   Moon,
-  Sun
+  Sun,
 } from 'lucide-react-native';
 
 export default function SettingsScreen() {
@@ -27,15 +27,15 @@ export default function SettingsScreen() {
   const [autoDetect, setAutoDetect] = useState(true);
   const [hapticFeedback, setHapticFeedback] = useState(true);
 
-  const SettingItem = ({ 
-    icon, 
-    title, 
-    subtitle, 
-    onPress, 
-    hasSwitch, 
-    switchValue, 
+  const SettingItem = ({
+    icon,
+    title,
+    subtitle,
+    onPress,
+    hasSwitch,
+    switchValue,
     onSwitchChange,
-    hasChevron = true 
+    hasChevron = true,
   }: {
     icon: React.ReactNode;
     title: string;
@@ -46,14 +46,12 @@ export default function SettingsScreen() {
     onSwitchChange?: (value: boolean) => void;
     hasChevron?: boolean;
   }) => (
-    <TouchableOpacity 
-      style={styles.settingItem} 
+    <TouchableOpacity
+      style={styles.settingItem}
       onPress={onPress}
       disabled={hasSwitch}
     >
-      <View style={styles.settingIcon}>
-        {icon}
-      </View>
+      <View style={styles.settingIcon}>{icon}</View>
       <View style={styles.settingContent}>
         <Text style={styles.settingTitle}>{title}</Text>
         {subtitle && <Text style={styles.settingSubtitle}>{subtitle}</Text>}
@@ -73,20 +71,25 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <SettingsIcon size={24} color="#3b82f6" />
             <Text style={styles.headerTitle}>Settings</Text>
           </View>
-          <Text style={styles.headerSubtitle}>Customize your translation experience</Text>
+          <Text style={styles.headerSubtitle}>
+            Customize your translation experience
+          </Text>
         </View>
 
         {/* Privacy Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Privacy & Security</Text>
-          
+
           <SettingItem
             icon={<Shield size={20} color="#10b981" />}
             title="Offline Mode"
@@ -95,14 +98,14 @@ export default function SettingsScreen() {
             switchValue={offlineMode}
             onSwitchChange={setOfflineMode}
           />
-          
+
           <SettingItem
             icon={<HardDrive size={20} color="#6b7280" />}
             title="Downloaded Models"
             subtitle="Manage your offline translation models"
             onPress={() => {}}
           />
-          
+
           <SettingItem
             icon={<Wifi size={20} color="#f59e0b" />}
             title="Cloud Assist"
@@ -114,16 +117,22 @@ export default function SettingsScreen() {
         {/* Appearance Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Appearance</Text>
-          
+
           <SettingItem
-            icon={darkMode ? <Moon size={20} color="#6366f1" /> : <Sun size={20} color="#f59e0b" />}
+            icon={
+              darkMode ? (
+                <Moon size={20} color="#6366f1" />
+              ) : (
+                <Sun size={20} color="#f59e0b" />
+              )
+            }
             title="Dark Mode"
             subtitle="Switch to dark theme"
             hasSwitch
             switchValue={darkMode}
             onSwitchChange={setDarkMode}
           />
-          
+
           <SettingItem
             icon={<Palette size={20} color="#ec4899" />}
             title="Keyboard Themes"
@@ -135,7 +144,7 @@ export default function SettingsScreen() {
         {/* Language Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Language</Text>
-          
+
           <SettingItem
             icon={<Globe size={20} color="#3b82f6" />}
             title="Auto-Detect Language"
@@ -144,7 +153,7 @@ export default function SettingsScreen() {
             switchValue={autoDetect}
             onSwitchChange={setAutoDetect}
           />
-          
+
           <SettingItem
             icon={<Download size={20} color="#059669" />}
             title="Language Packs"
@@ -156,7 +165,7 @@ export default function SettingsScreen() {
         {/* Keyboard Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Keyboard</Text>
-          
+
           <SettingItem
             icon={<SettingsIcon size={20} color="#6b7280" />}
             title="Haptic Feedback"
@@ -170,7 +179,7 @@ export default function SettingsScreen() {
         {/* Model Management Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Model Management</Text>
-          
+
           <View style={styles.modelList}>
             <View style={styles.modelItem}>
               <View style={styles.modelInfo}>
@@ -181,7 +190,7 @@ export default function SettingsScreen() {
                 <Text style={styles.modelStatusText}>Ready</Text>
               </View>
             </View>
-            
+
             <View style={styles.modelItem}>
               <View style={styles.modelInfo}>
                 <Text style={styles.modelName}>English ↔ French</Text>
@@ -191,13 +200,15 @@ export default function SettingsScreen() {
                 <Text style={styles.modelStatusText}>Ready</Text>
               </View>
             </View>
-            
+
             <View style={styles.modelItem}>
               <View style={styles.modelInfo}>
                 <Text style={styles.modelName}>English ↔ German</Text>
                 <Text style={styles.modelSize}>13.1 MB • Not Downloaded</Text>
               </View>
-              <TouchableOpacity style={[styles.modelStatus, styles.modelNotDownloaded]}>
+              <TouchableOpacity
+                style={[styles.modelStatus, styles.modelNotDownloaded]}
+              >
                 <Download size={14} color="#3b82f6" />
                 <Text style={styles.modelDownloadText}>Download</Text>
               </TouchableOpacity>

@@ -20,7 +20,8 @@ export default function TabLayout() {
           fontFamily: 'Inter-Medium',
           fontSize: 12,
         },
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -52,9 +53,7 @@ export default function TabLayout() {
         name="about"
         options={{
           title: 'About',
-          tabBarIcon: ({ size, color }) => (
-            <Info size={size} color={color} />
-          ),
+          tabBarIcon: ({ size, color }) => <Info size={size} color={color} />,
         }}
       />
     </Tabs>

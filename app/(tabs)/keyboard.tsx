@@ -1,26 +1,34 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  ScrollView, 
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
   StyleSheet,
   TextInput,
-  Dimensions 
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Keyboard as KeyboardIcon, Languages, Space, Delete, ArrowRight } from 'lucide-react-native';
+import {
+  Keyboard as KeyboardIcon,
+  Languages,
+  Space,
+  Delete,
+  ArrowRight,
+} from 'lucide-react-native';
 
 const { width } = Dimensions.get('window');
 
 const KEYBOARD_KEYS = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-  ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+  ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
 ];
 
 export default function KeyboardScreen() {
-  const [inputMode, setInputMode] = useState<'original' | 'translated'>('original');
+  const [inputMode, setInputMode] = useState<'original' | 'translated'>(
+    'original',
+  );
   const [currentText, setCurrentText] = useState('');
   const [translationSuggestion, setTranslationSuggestion] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useState('ES');
@@ -28,36 +36,36 @@ export default function KeyboardScreen() {
   const keyWidth = (width - 60) / 10 - 4; // Account for padding and gaps
 
   const handleKeyPress = (key: string) => {
-    setCurrentText(prev => prev + key);
-    
+    setCurrentText((prev) => prev + key);
+
     // Simulate real-time translation suggestion
     const mockTranslations: Record<string, string> = {
-      'h': 'h',
-      'he': 'él',
-      'hel': 'ayud',
-      'hell': 'infiern',
-      'hello': 'hola',
+      h: 'h',
+      he: 'él',
+      hel: 'ayud',
+      hell: 'infiern',
+      hello: 'hola',
       'hello ': 'hola ',
       'hello w': 'hola m',
       'hello wo': 'hola mu',
       'hello wor': 'hola mund',
       'hello worl': 'hola mund',
-      'hello world': 'hola mundo'
+      'hello world': 'hola mundo',
     };
-    
+
     setTranslationSuggestion(mockTranslations[currentText + key] || '');
   };
 
   const handleBackspace = () => {
-    setCurrentText(prev => prev.slice(0, -1));
+    setCurrentText((prev) => prev.slice(0, -1));
   };
 
   const handleSpace = () => {
-    setCurrentText(prev => prev + ' ');
+    setCurrentText((prev) => prev + ' ');
   };
 
   const handleModeSwitch = () => {
-    setInputMode(prev => prev === 'original' ? 'translated' : 'original');
+    setInputMode((prev) => (prev === 'original' ? 'translated' : 'original'));
   };
 
   const handleLanguageSwitch = () => {
@@ -69,35 +77,53 @@ export default function KeyboardScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerContent}>
             <KeyboardIcon size={24} color="#3b82f6" />
             <Text style={styles.headerTitle}>Keyboard Demo</Text>
           </View>
-          <Text style={styles.headerSubtitle}>Real-time translation as you type</Text>
+          <Text style={styles.headerSubtitle}>
+            Real-time translation as you type
+          </Text>
         </View>
 
         {/* Input Display */}
         <View style={styles.inputDisplay}>
           <View style={styles.inputHeader}>
             <Text style={styles.inputLabel}>
-              {inputMode === 'original' ? 'English Input' : `${selectedLanguage} Translation`}
+              {inputMode === 'original'
+                ? 'English Input'
+                : `${selectedLanguage} Translation`}
             </Text>
-            <TouchableOpacity style={styles.modeButton} onPress={handleModeSwitch}>
+            <TouchableOpacity
+              style={styles.modeButton}
+              onPress={handleModeSwitch}
+            >
               <Text style={styles.modeButtonText}>
-                {inputMode === 'original' ? 'Switch to Translation' : 'Switch to Original'}
+                {inputMode === 'original'
+                  ? 'Switch to Translation'
+                  : 'Switch to Original'}
               </Text>
             </TouchableOpacity>
           </View>
-          
+
           <TextInput
             style={styles.textDisplay}
-            value={inputMode === 'original' ? currentText : translationSuggestion}
+            value={
+              inputMode === 'original' ? currentText : translationSuggestion
+            }
             editable={false}
             multiline
-            placeholder={inputMode === 'original' ? 'Start typing...' : 'Translation will appear here...'}
+            placeholder={
+              inputMode === 'original'
+                ? 'Start typing...'
+                : 'Translation will appear here...'
+            }
             placeholderTextColor="#9ca3af"
           />
         </View>
@@ -155,11 +181,14 @@ export default function KeyboardScreen() {
 
           {/* Bottom Row */}
           <View style={styles.keyboardRow}>
-            <TouchableOpacity style={styles.actionKey} onPress={handleLanguageSwitch}>
+            <TouchableOpacity
+              style={styles.actionKey}
+              onPress={handleLanguageSwitch}
+            >
               <Languages size={16} color="#ffffff" />
               <Text style={styles.actionKeyText}>{selectedLanguage}</Text>
             </TouchableOpacity>
-            
+
             {KEYBOARD_KEYS[2].map((key) => (
               <TouchableOpacity
                 key={key}
@@ -169,8 +198,11 @@ export default function KeyboardScreen() {
                 <Text style={styles.keyText}>{key.toUpperCase()}</Text>
               </TouchableOpacity>
             ))}
-            
-            <TouchableOpacity style={styles.actionKey} onPress={handleBackspace}>
+
+            <TouchableOpacity
+              style={styles.actionKey}
+              onPress={handleBackspace}
+            >
               <Delete size={16} color="#ffffff" />
             </TouchableOpacity>
           </View>
@@ -189,19 +221,27 @@ export default function KeyboardScreen() {
           <Text style={styles.featuresTitle}>Keyboard Features</Text>
           <View style={styles.featureItem}>
             <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Real-time translation suggestions as you type</Text>
+            <Text style={styles.featureText}>
+              Real-time translation suggestions as you type
+            </Text>
           </View>
           <View style={styles.featureItem}>
             <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Long-press Space to switch translation direction</Text>
+            <Text style={styles.featureText}>
+              Long-press Space to switch translation direction
+            </Text>
           </View>
           <View style={styles.featureItem}>
             <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Smart clipboard translation detection</Text>
+            <Text style={styles.featureText}>
+              Smart clipboard translation detection
+            </Text>
           </View>
           <View style={styles.featureItem}>
             <View style={styles.featureBullet} />
-            <Text style={styles.featureText}>Offline processing for complete privacy</Text>
+            <Text style={styles.featureText}>
+              Offline processing for complete privacy
+            </Text>
           </View>
         </View>
       </ScrollView>
