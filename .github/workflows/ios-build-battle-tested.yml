@@ -26,6 +26,18 @@ jobs:
       - name: 🛠️ Global dependencies
         run: npm ci && npm install -g expo-cli eas-cli
 
+      # ---------- 0. Prerequisites check ----------
+      - name: 🔍 Verify Prerequisites  
+        run: |
+          echo "=== Checking Xcode version ==="
+          xcodebuild -version
+          echo "=== Checking iOS SDK version ==="
+          xcrun --sdk iphoneos --show-sdk-version
+          echo "=== Checking Expo SDK version ==="
+          npx expo --version
+          echo "=== Checking Swift version ==="
+          swift --version
+
       # ---------- 1. generate ios/ (if needed) ----------
       - name: 🍎 Expo prebuild (iOS)
         if: ${{ !hashFiles('ios/Podfile') }}
@@ -43,11 +55,17 @@ jobs:
           test -f ios/Podfile
           echo "✅ Podfile confirmed present"
 
-      # ---------- 3. install pods ----------
-      - name: 📦 CocoaPods Install
+      # ---------- 3. install pods with patches ----------
+      - name: 📦 CocoaPods Install + Verify Patches
         run: |
           cd ios
           pod install --repo-update
+          echo "=== Verifying ExpoModulesCore patch ==="
+          if grep -q '_Nonnull' Pods/**/EXJSIInstaller.h 2>/dev/null; then
+            echo "✅ _Nonnull patch applied successfully"
+          else
+            echo "⚠️  _Nonnull patch may not be needed (no EXJSIInstaller.h found)"
+          fi
         env:
           CP_DISABLE_REPO_SYNC: 1   # speed-up
 

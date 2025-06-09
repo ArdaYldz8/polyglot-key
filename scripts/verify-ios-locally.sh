@@ -7,6 +7,12 @@ set -e  # Exit on any error
 echo "🔍 Step 4: Local iOS Verification"
 echo "================================="
 
+echo "🔍 Prerequisites check..."
+echo "Xcode version: $(xcodebuild -version | head -1)"
+echo "iOS SDK: $(xcrun --sdk iphoneos --show-sdk-version)"
+echo "Expo version: $(npx expo --version)"
+echo "Swift version: $(swift --version | head -1)"
+
 echo "📁 Cleaning existing iOS folder..."
 rm -rf ios
 

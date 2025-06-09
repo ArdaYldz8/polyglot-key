@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.polyglotkey.app"
+      "bundleIdentifier": "com.polyglotkey.app",
+      "deploymentTarget": "16.0"
     },
     "web": {
       "bundler": "metro",
