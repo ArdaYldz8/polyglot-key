@@ -268,10 +268,19 @@ jobs:
     - name: 🛠️ Install dependencies
       run: npm ci
       
-    - name: 🍎 Setup iOS
+    - name: 🍎 Generate iOS project (if needed)
+      run: |
+        if [ ! -f "ios/Podfile" ]; then
+          echo "=== Generating iOS project ==="
+          npx expo prebuild --platform ios --clean --no-install
+        else
+          echo "=== iOS project already exists ==="
+        fi
+        
+    - name: 🍎 Setup iOS dependencies
       run: |
         cd ios
-        pod install
+        pod install --repo-update
         
     - name: 🏗️ Build iOS Keyboard Extension
       run: |
