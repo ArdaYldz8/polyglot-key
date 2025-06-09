@@ -2,9 +2,9 @@ name: iOS Build
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
   workflow_dispatch:  # Manual trigger
 
 jobs:
@@ -45,8 +45,8 @@ jobs:
           *.ipa
           
     - name: Build iOS Archive (Release)
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
       run: |
-        # Release build için daha sonra Apple Developer hesabı gerekebilir
+        # Release build requires Apple Developer account
         echo "Release build requires Apple Developer account"
         echo "Current build: Development/Simulator build completed" 
