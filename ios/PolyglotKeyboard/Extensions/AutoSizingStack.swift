@@ -11,18 +11,12 @@ import SwiftUI
 extension View {
   @ViewBuilder
   func sizeAware(action: @escaping (CGSize) -> Void) -> some View {
-    if #available(iOS 17.0, *) {
-      self.onGeometryChange(for: CGSize.self) { proxy in
-        action(proxy.size)
-      }
-    } else {
-      // Fallback for iOS 16
-      self.background(GeometryReader { geometry in
-        Color.clear
-          .preference(key: SizePreferenceKey.self, value: geometry.size)
-      })
-      .onPreferenceChange(SizePreferenceKey.self, perform: action)
-    }
+    // Use GeometryReader approach for maximum compatibility
+    self.background(GeometryReader { geometry in
+      Color.clear
+        .preference(key: SizePreferenceKey.self, value: geometry.size)
+    })
+    .onPreferenceChange(SizePreferenceKey.self, perform: action)
   }
 }
 
