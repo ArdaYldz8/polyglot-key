@@ -1,0 +1,68 @@
+name: iOS Build (Final Solution)
+
+on:
+  workflow_dispatch:  # Manual trigger only
+  
+jobs:
+  ios-build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        
+    - name: Setup Expo CLI
+      run: |
+        npm install -g @expo/cli
+        
+    - name: Check initial state
+      run: |
+        echo "=== Initial iOS folder ==="
+        ls -la ios/ || echo "iOS folder not found"
+        
+    - name: Remove existing iOS folder
+      run: |
+        echo "=== Removing existing iOS folder ==="
+        rm -rf ios
+        
+    - name: Use expo run:ios to generate proper iOS project with Podfile
+      run: |
+        echo "=== Using expo run:ios to generate iOS project ==="
+        # expo run:ios automatically generates the Podfile
+        npx expo run:ios --device simulator --no-build-cache
+        
+    - name: Verify Podfile was created
+      run: |
+        echo "=== Checking if Podfile was created ==="
+        ls -la ios/
+        echo "=== Podfile content ==="
+        cat ios/Podfile
+        echo "=== iOS project structure ==="
+        ls -la ios/
+        
+    - name: Success - Upload iOS build artifacts
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-success
+        path: |
+          ios/
+          
+    - name: Failure - Upload logs for debugging
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-failure-logs
+        path: |
+          ~/Library/Logs/DiagnosticReports/
+          *.log 
