@@ -10,13 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.polyglotkey.app",
-      "deploymentTarget": "16.0",
-      "buildSettings": {
-        "SWIFT_TREAT_WARNINGS_AS_ERRORS": "NO",
-        "GCC_TREAT_WARNINGS_AS_ERRORS": "NO",
-        "CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER": "NO"
-      }
+      "bundleIdentifier": "com.polyglotkey.app"
     },
     "web": {
       "bundler": "metro",
