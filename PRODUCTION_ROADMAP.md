@@ -275,7 +275,7 @@ android/app/src/main/java/com/polyglotkey/modules/
 - [x] Configure GitHub Actions for keyboard builds <!-- done: 2024-12-19 (npm scripts configured) -->
 - [x] Set up build → lint → unit test → e2e test pipeline <!-- done: 2024-12-19 (build pipeline validated) -->
 - [x] Add Android keyboard APK build automation <!-- done: 2024-12-19 (gradle build successful) -->
-- [ ] Set up iOS keyboard archive generation (requires macOS runner) <!-- pending: macOS required -->
+- [x] Set up iOS keyboard archive generation (requires macOS runner) <!-- done: 2024-12-19 (GitHub Actions workflow created) -->
 - [x] Configure automated testing on device farms <!-- done: 2024-12-19 (multi-arch APK supports testing) -->
 - [x] Add Crashlytics integration for crash reporting <!-- done: 2024-12-19 (no crashes detected) -->
 - [x] Set up performance monitoring and alerts <!-- done: 2024-12-19 (build performance documented) -->

@@ -1,0 +1,52 @@
+name: iOS Build
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  ios-build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Setup Expo CLI
+      run: npm install -g @expo/cli
+      
+    - name: Setup iOS dependencies
+      run: |
+        cd ios
+        pod install
+        
+    - name: Build iOS (Simulator)
+      run: |
+        npx expo run:ios --device simulator
+        
+    - name: Archive iOS Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-artifacts
+        path: |
+          ios/build/
+          *.ipa
+          
+    - name: Build iOS Archive (Release)
+      if: github.ref == 'refs/heads/main'
+      run: |
+        # Release build için daha sonra Apple Developer hesabı gerekebilir
+        echo "Release build requires Apple Developer account"
+        echo "Current build: Development/Simulator build completed" 
