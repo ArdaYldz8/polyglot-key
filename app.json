@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "bolt-expo-nativewind",
-    "slug": "bolt-expo-nativewind",
+    "name": "PolyglotKey",
+    "slug": "polyglot-key",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -22,7 +22,7 @@
       "typedRoutes": true
     },
     "android": {
-      "package": "com.anonymous.boltexponativewind"
+      "package": "com.polyglotkey.app"
     }
   }
 }
