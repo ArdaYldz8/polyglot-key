@@ -1,0 +1,59 @@
+name: iOS Build (Simple)
+
+on:
+  workflow_dispatch:  # Manual trigger only for now
+  
+jobs:
+  ios-build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        
+    - name: Check iOS folder structure
+      run: |
+        echo "Checking iOS folder..."
+        ls -la ios/ || echo "iOS folder not found"
+        
+    - name: Setup Expo/React Native CLI
+      run: |
+        npm install -g @expo/cli @react-native-community/cli
+        
+    - name: Generate iOS native files (if needed)
+      run: |
+        npx expo prebuild --platform ios --clean
+        
+    - name: Install iOS dependencies
+      run: |
+        cd ios
+        pod install --verbose
+        
+    - name: List Xcode schemes
+      run: |
+        cd ios
+        xcodebuild -list
+        
+    - name: Build iOS (Development)
+      run: |
+        cd ios
+        xcodebuild -workspace PolyglotKey.xcworkspace -scheme PolyglotKey -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 14' build
+        
+    - name: Upload build logs
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-logs
+        path: |
+          ~/Library/Logs/DiagnosticReports/
+          ios/build/ 
