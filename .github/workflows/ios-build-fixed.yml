@@ -1,0 +1,81 @@
+name: iOS Build (Fixed)
+
+on:
+  workflow_dispatch:  # Manual trigger only
+  
+jobs:
+  ios-build:
+    runs-on: macos-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: |
+        npm ci
+        
+    - name: Setup Expo CLI
+      run: |
+        npm install -g @expo/cli
+        
+    - name: Check current iOS structure
+      run: |
+        echo "=== Current iOS folder ==="
+        ls -la ios/ || echo "iOS folder not found"
+        echo "=== Checking for Podfile ==="
+        ls -la ios/Podfile || echo "No Podfile found"
+        
+    - name: Generate iOS native files with Podfile
+      run: |
+        echo "=== Cleaning and regenerating iOS files ==="
+        npx expo prebuild --platform ios --clean
+        
+    - name: Verify Podfile was created
+      run: |
+        echo "=== After prebuild ==="
+        ls -la ios/
+        echo "=== Checking Podfile ==="
+        cat ios/Podfile || echo "Podfile still missing"
+        
+    - name: Install iOS dependencies
+      run: |
+        cd ios
+        echo "=== Installing pods ==="
+        pod install --verbose
+        
+    - name: List Xcode workspace
+      run: |
+        cd ios
+        echo "=== Available workspaces ==="
+        ls -la *.xcworkspace || echo "No workspace found"
+        
+    - name: Build iOS for Simulator
+      run: |
+        cd ios
+        echo "=== Building iOS ==="
+        xcodebuild -workspace PolyglotKey.xcworkspace -scheme PolyglotKey -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 14' build
+        
+    - name: Upload build artifacts
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-success
+        path: |
+          ios/build/
+          
+    - name: Upload failure logs
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ios-build-failure-logs
+        path: |
+          ios/Pods/
+          ios/Podfile*
+          ios/build/ 
