@@ -314,6 +314,7 @@ jobs:
     - name: 🏷️ Create Release Tag
       run: |
         echo "RELEASE_TAG=keyboard-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+        echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_ENV
         
     - name: 📦 Create GitHub Release
       uses: softprops/action-gh-release@v1
@@ -327,7 +328,7 @@ jobs:
         body: |
           ## 🎯 Polyglot Keyboard Build
           
-          **Build Date:** $(date +'%Y-%m-%d %H:%M:%S UTC')
+          **Build Date:** ${{ env.BUILD_DATE }}
           **Commit:** ${{ github.sha }}
           **Branch:** ${{ github.ref_name }}
           
